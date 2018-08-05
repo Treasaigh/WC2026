@@ -1,0 +1,80 @@
+﻿Rank,Team,Pld,W,D,L,GF,GA,GD,Points,Topscorer(s),Num of Goals
+1, Brazil,109,73,18,18,229,105,124,237,Ronaldo,15
+2, Germany,109,67,20,22,226,125,101,221,M. Klose,16
+3, Italy,83,45,21,17,128,77,51,156,"C. Vieri, R. Baggio, P. Rossi",9
+4, Argentina,81,43,15,23,137,93,44,144,G. Batistuta,10
+5, France,66,34,13,19,120,77,43,115,J. Fontaine,13
+6, England,69,29,21,19,91,64,27,108,G. Lineker,10
+7, Spain,63,30,15,18,99,72,27,105,D. Villa,9
+8, Netherlands,50,27,12,11,86,48,38,93,J. Rep,7
+9, Uruguay,56,24,12,20,87,74,13,84,Ó. Míguez,8
+10, Sweden,51,19,13,19,80,73,7,70,"H. Larsson, K. Andersson",5
+11, Belgium,48,20,9,19,68,72,-4,69,"M. Wilmots, R. Lukaku",5
+12, Russia,45,19,10,16,77,54,23,67,O. Salenko,6
+13, Serbia,46,18,8,20,66,63,3,62,D. Jerković,4
+14, Mexico,57,16,14,27,60,98,-38,62,"L. Hernández, J. Hernández",4
+15, Poland,34,16,5,13,46,45,1,53,G. Lato,10
+16, Hungary,32,15,3,14,87,57,30,48,S. Kocsis,11
+17, Portugal,30,14,6,10,49,35,14,48,Eusébio,9
+18,  Switzerland,37,12,8,17,50,64,-14,44,J. Hügi,6
+19, Czech Republic,33,12,5,16,47,49,-2,41,O. Nejedlý,7
+20, Austria,29,12,4,13,43,47,-4,40,E. Probst,6
+21, Chile,33,11,7,15,40,49,-9,40,"M. Salas, L. Sánchez",4
+22, Croatia,23,11,4,8,35,26,9,37,D. Šuker,6
+23, Denmark,20,9,5,6,30,26,4,32,J. D. Tomasson,5
+24, Paraguay,27,7,10,10,30,38,-8,31,N. Cuevas,3
+25, Colombia,22,9,3,10,32,30,2,30,J. Rodríguez,6
+26, United States,33,8,6,19,37,62,-25,30,L. Donovan,5
+27, Romania,21,8,5,8,30,32,-2,29,F. Răducioiu,4
+28, South Korea,34,6,9,19,34,70,-36,27,"Ahn Jung-hwan, Park Ji-sung, Son Heung-min",3
+29, Nigeria,21,6,3,12,23,30,-7,21,A. Musa,4
+30, Japan,21,5,5,11,20,29,-9,20,K. Honda,4
+31, Costa Rica,18,5,5,8,19,28,-9,20,"R. Gómez, P. Wanchope",3
+32, Scotland,23,4,7,12,25,41,-16,19,J. Jordan,4
+33, Cameroon,23,4,7,12,18,43,-25,19,R. Milla,5
+34, Peru,18,5,3,10,21,33,-12,18,T. Cubillas,10
+35, Bulgaria,26,3,8,15,22,53,-31,17,H. Stoichkov,6
+36, Turkey,10,5,1,4,20,17,3,16,"Suat M., Burhan S., İlhan M.",3
+37, Ghana,12,4,3,5,13,16,-3,15,A. Gyan,6
+38, Republic of Ireland,13,2,8,3,10,10,0,14,R. Keane,3
+39, Northern Ireland,13,3,5,5,13,23,-10,14,P. McParland,5
+40, Ecuador,10,4,1,5,10,11,-1,13,"A. Delgado, E. Valencia",3
+41, Senegal,8,3,3,2,11,10,1,12,P. Bouba Diop,3
+42, Algeria,13,3,3,7,13,19,-6,12,"S. Assad, A. Djabou, I. Slimani",2
+43, Morocco,16,2,5,9,14,22,-8,11,"A. Hadda, A. Khairi, S. Bassir",2
+44, Saudi Arabia,16,3,2,11,11,39,-28,11,S. Al-Jaber,3
+45, Ivory Coast,9,3,1,5,13,14,-1,10,"W. Bony, A. Dindane, D. Drogba, Gervinho",2
+46, South Africa,9,2,4,3,11,16,-5,10,"S. Bartlett, B. McCarthy",2
+47, Tunisia,15,2,4,9,13,25,-12,10,W. Khazri,2
+48, Iran,15,2,4,9,9,24,-15,10,multiple,1
+49, Australia,16,2,4,10,13,31,-18,10,T. Cahill,5
+50, Norway,8,2,3,3,7,8,-1,9,K. Rekdal,2
+51, East Germany,6,2,2,2,5,5,0,8,J. Streich,2
+52, Greece,10,2,2,6,5,20,-15,8,multiple,1
+53, Ukraine,5,2,1,2,5,7,-2,7,A. Shevchenko,2
+54, Wales,5,1,3,1,4,4,0,6,I. Allchurch,2
+55, Slovakia,4,1,1,2,5,7,-2,4,R. Vittek,4
+56, Slovenia,6,1,1,4,5,10,-5,4,multiple,1
+57, Cuba,3,1,1,1,5,12,-7,4,H. Socorro,3
+58, North Korea,7,1,1,5,6,21,-15,4,Pak Seung-zin,2
+59, Bosnia and Herzegovina,3,1,0,2,4,4,0,3,"E. Džeko, V. Ibišević, M. Pjanić, A. Vršajević",1
+60, Jamaica,3,1,0,2,3,9,-6,3,T. Whitmore,2
+61, New Zealand,6,0,3,3,4,14,-10,3,"W. Reid, S. Smeltz, S. Sumner, S. Wooddin",1
+62, Honduras,9,0,3,6,3,14,-11,3,"E. Laing, H. Zelaya, C. Costly",1
+63, Angola,3,0,2,1,1,2,-1,2,Flávio,1
+64, Israel,3,0,2,1,1,3,-2,2,M. Spiegler,1
+65, Egypt,7,0,2,5,5,12,-7,2,"A. Fawzi, M. Salah",2
+66, Iceland,3,0,1,2,2,5,-3,1,"A. Finnbogason, G. Sigurðsson",1
+67, Kuwait,3,0,1,2,2,6,-4,1,"F. Al-Dakhil, A. Al-Buloushi",1
+68, Trinidad and Tobago,3,0,1,2,0,4,-4,1,—,
+69, Bolivia,6,0,1,5,1,20,-19,1,E. Sánchez,1
+70, Iraq,3,0,0,3,1,4,-3,0,A. Radhi,1
+71, Togo,3,0,0,3,1,6,-5,0,M. Kader,1
+72, Canada,3,0,0,3,0,5,-5,0,—,
+73, Indonesia,1,0,0,1,0,6,-6,0,—,
+74, Panama,3,0,0,3,2,11,-9,0,F. Baloy,1
+75, United Arab Emirates,3,0,0,3,2,11,-9,0,"A. Jumaa, K. Ismaïl",1
+76, China PR,3,0,0,3,0,9,-9,0,—,
+77, Haiti,3,0,0,3,2,14,-12,0,E. Sanon,2
+78, DR Congo,3,0,0,3,0,14,-14,0,—,
+79, El Salvador,6,0,0,6,1,22,-21,0,L. Ramírez,1
