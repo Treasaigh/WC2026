@@ -1,0 +1,50 @@
+---
+title: "Project"
+output: html_document
+---
+
+```{r echo=TRUE}
+countryRaw = read.csv("~/Desktop/DAA/WC2026/WC2026/soccer_V2.csv")
+head(countryRaw)
+summary(countryRaw)
+```
+
+
+```{r echo=TRUE}
+library(sqldf)
+wcYearRaw = sqldf("SELECT *
+      FROM countryRaw
+      WHERE WCYEAR = '1'")
+View(wcYearRaw)
+
+wcPrevYearRaw = sqldf("SELECT *
+      FROM countryRaw
+      WHERE WCPREVYEAR = '1'")
+View(wcPrevYearRaw)
+
+wcQualRaw = sqldf("SELECT *
+      FROM countryRaw
+      WHERE WCQUALIFY = '1'")
+View(wcQualRaw)
+
+favSoccerRaw = sqldf("SELECT *
+                  FROM countryRaw
+                  WHERE FAVSPORT = '1'")
+View(favSoccerRaw)
+
+wcQualByConf = sqldf("SELECT DISTINCT Country
+      FROM countryRaw
+      WHERE WCQUALIFY = '1'")
+View(wcQualByConf)
+
+plot(wcQualRaw$Place, wcQualRaw$GDP)
+
+install.packages("corrplot")
+library(corrplot)
+corrplot(wcQualRaw)
+```
+
+```{r echo=TRUE}
+
+```
+
