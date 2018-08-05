@@ -1,0 +1,16 @@
+---
+title: "AverageROC"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(sqldf)
+tracyQualRaw <- read.csv("~/Desktop/DAA/WC2026/WC2026/soccer_V2.csv", stringsAsFactors = FALSE, header = TRUE)
+meanPopChangeByCountry = sqldf("SELECT avg(X1yrPopROC) as avg1YrPop, avg(X4yrPopROC) as avg4YrPop,avg(X5yrPopROC) as avg5YrPop,avg(X8yrPopROC) as avg8YrPop,avg(X10yrPopROC) as avg10YrPop, 
+avg(X1yrGDPROC) as avg1YrGDP, avg(X4yrGDPROC) as avg4YrGDP, avg(X5yrGDPROC) as avg5YrGDP, avg(X8yrGDPROC) as avg8YrGDP, avg(X10yrGDPROC) as avg10YrGDP,
+avg(X1yrGDPPerROC) as avg1YrGDPPer, avg(X4yrGDPPerROC) as avg4YrGDPPer, avg(X5yrGDPPerROC) as avg5YrGDPPer, avg(X8yrGDPPerROC) as avg8YrGDPPer, avg(X10yrGDPPerROC) as avg10YrGDPPer,
+avg(X1yrELOROC) as avg1YrELO, avg(X4yrELOROC) as avg4YrELO, avg(X5yrELOROC) as avg5YrELO, avg(X8yrELOROC) as avg8YrELO, avg(X10yrELOROC) as avg10YrELO,Country
+                      FROM tracyQualRaw
+                      GROUP BY Country")
+``````
+
