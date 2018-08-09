@@ -1,0 +1,69 @@
+---
+title: "Projections"
+author: "Omar Fuentes"
+date: "August 9, 2018"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+X25Proj= read.csv('C:/Users/Omar/Desktop/WorldCupProject/X25Projections.csv',header = TRUE, na.strings = ".")
+X25Proj$FAVSPORT = as.factor(X25Proj$FAVSPORT)
+str(X25Proj)
+```
+
+```{r}
+dt = sample(nrow(soccerProj), nrow(soccerProj)*.8,replace = FALSE)
+trainProj = soccerProj[dt,]
+testProj = soccerProj[-dt,]
+```
+
+#Project GDPPER linearly
+```{r}
+library(caret)
+mod1Proj = glm(GDPPER~X4yrAgoGDP+X4yrAgoGDPPER, data = trainProj)
+summary(mod1Proj)
+
+soccer2025Proj$X4GDPPER4yrProj = predict(mod1Proj,newdata = soccer2025Proj)
+```
+
+Import Projected Values
+```{r}
+X25Proj= read.csv('C:/Users/Omar/Desktop/WorldCupProject/X25Projections.csv',header = TRUE, na.strings = ".")
+
+X25Proj$FAVSPORT = as.factor(X25Proj$FAVSPORT)
+X25Proj$GDP = as.numeric(X25Proj$GDP)
+X25Proj$GDPPER = as.numeric(X25Proj$GDPPER)
+X25Proj$Population = as.numeric(X25Proj$Population)
+
+str(X25Proj)
+```
+
+PreProcessValues for use in models
+```{r}
+library(AppliedPredictiveModeling)
+library(caret)
+#Center and Scale Population, GDP and GDP Per Capita
+PreProc = preProcess(X25Proj[,10:12], method=c("center", "scale"))
+soccerPP = predict(PreProc, X25Proj[,10:12])
+#change column names of Cenetered and scaled variables
+soccerPP = setNames(soccerPP, c("GDPCS","POPCS","GDPPERCS"))
+
+soccerCSProj25 = as.data.frame(c(X25Proj,soccerPP))
+```
+
+
+Use best model to project Elo Rating
+```{r}
+library(randomForest)
+library(caret)
+rfmodelcs = randomForest(Elo~POPCS+GDPCS+GDPPERCS+FAVSPORT+CONF, data = trainCS, na.action = na.exclude)
+rfmodelcs
+
+X25Proj$X25EloProj = predict(rfmodelcs, newdata = soccerCSProj25)
+```
+
