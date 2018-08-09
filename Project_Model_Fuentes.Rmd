@@ -1,0 +1,496 @@
+---
+title: "Project_Analysis"
+author: "Omar Fuentes"
+date: "July 28, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+soccer= read.csv('C:/Users/Omar/Desktop/WorldCupProject/soccer_V2.csv',header = TRUE, na.strings = ".")
+str(soccer)
+
+#make spare dataset identical to first
+soccer2 = read.csv('C:/Users/Omar/Desktop/WorldCupProject/soccer_V2.csv',header = TRUE, na.strings = ".")
+
+#change binary variables to factors
+soccer$WCYEAR = as.factor(soccer$WCYEAR)
+soccer$WCQUALIFY = as.factor(soccer$WCQUALIFY)
+soccer$WCPREVYEAR = as.factor(soccer$WCPREVYEAR)
+soccer$WCPREVYEARQUAL = as.factor(soccer$WCPREVYEARQUAL)
+soccer$FAVSPORT = as.factor(soccer$FAVSPORT)
+soccer$GENPLAYERYN = as.factor(soccer$GENPLAYERYN)
+
+#apply same changes to backup dataset
+soccer2$WCYEAR = as.factor(soccer2$WCYEAR)
+soccer2$WCQUALIFY = as.factor(soccer2$WCQUALIFY)
+soccer2$WCPREVYEAR = as.factor(soccer2$WCPREVYEAR)
+soccer2$WCPREVYEARQUAL = as.factor(soccer2$WCPREVYEARQUAL)
+soccer2$FAVSPORT = as.factor(soccer2$FAVSPORT)
+soccer2$GENPLAYERYN = as.factor(soccer2$GENPLAYERYN)
+```
+
+Elo significant to World Cup Qualifying
+```{r}
+#make dataset only featuring world cup years and qualify binary variable
+#seeking to answer question, does the elo rating and elo rank predict world cup qualifying
+library(sqldf)
+eloqual= sqldf("SELECT Rank, Year, Country, Elo, CONF, WCYEAR, WCQUALIFY
+          FROM soccer
+          WHERE WCYEAR = 1
+          ORDER BY Year, Elo DESC")
+```
+
+```{r}
+#same as above but this time look at the Elo rating and rank in the year leading up to the world cup
+#as qualifiers are over by the tne end of the year prior to World Cup
+
+eloqualprev= sqldf("SELECT Rank, Year, Country, Elo, CONF, WCPREVYEAR, WCPREVYEARQUAL
+          FROM soccer
+          WHERE WCPREVYEAR = 1
+          ORDER BY Year, Elo DESC")
+```
+
+Does Elo rating correlate with World Cup qualifying?
+```{r}
+check = glm(WCQUALIFY~Elo, data = eloqual, family = "binomial")
+summary(check)
+```
+
+Does Previous Year Elo correlate with World Cup Ranking?
+```{r}
+check2 = glm(WCPREVYEARQUAL~Elo, data = eloqualprev, family = "binomial")
+summary(check2)
+```
+#Slightly better model using the previous year elo to predict world cup qualifying (lower AIC)
+
+
+#Split data into train and test and start building models
+```{r}
+idx = sample(nrow(eloqualprev), nrow(eloqualprev)*.7, rep=FALSE)
+train = eloqualprev[idx,]
+test = eloqualprev[-idx,]
+```
+
+#Simple logistic model World Cup Qualifying based on a country's Elo rating
+```{r}
+lmelopred = glm(WCQUALIFY~ELO, data = train, family = "binomial")
+lmpred = predict(lmelopred, data = test, type = "response")
+summary(lmpred)
+```
+
+#Examine the relationship between ELO and GDP, Population, GDPPerCapita. In terms of amount, increase/descrease and rate of change.
+```{r}
+# Examine 1 year relationships, number to number, year to year change and rate of change.
+f1 = glm(Elo~GDP+Population, data = soccer)
+summary(f1)
+
+f1a = glm(Elo~GDPPER, data = soccer)
+summary(f1a)
+
+f2 = glm(X1yrELOChg ~ X1yrGDPChg+X1yrPopChg, data = soccer)
+summary(f2)
+
+f2a = glm(X1yrELOChg ~ X1yrGDPPerChg, data = soccer)
+summary(f2a)
+
+f3 = glm(X1yrELOROC ~ X1yrGDPROC+X1yrPopROC, data = soccer)
+summary(f3)
+
+f3a = glm(X1yrELOROC ~ X1yrGDPPerROC, data = soccer)
+summary(f3a)
+```
+
+```{r}
+# Examine 5 year relationships, year to year change and rate of change.
+g2 = glm(X5yrELOChg ~ X5yrGDPChg+X5yrPopChg, data = soccer)
+summary(g2)
+
+g2a = glm(X5yrELOChg ~ X5yrGDPPerChg, data = soccer)
+summary(g2a)
+
+g3 = glm(X5yrELOROC ~ X5yrGDPROC+X5yrPopROC, data = soccer)
+summary(g3)
+
+g3a = glm(X5yrELOROC ~ X5yrGDPPerROC, data = soccer)
+summary(g3a)
+```
+
+```{r}
+# Examine 10 year relationship year to year change and rate of change.
+h2 = glm(X10yrELOChg ~ X10yrGDPChg+X10yrPopChg, data = soccer)
+summary(h2)
+
+h2a = glm(X10yrELOChg ~ X10yrGDPPerChg, data = soccer)
+summary(h2a)
+
+h3 = glm(X10yrELOROC ~ X10yrGDPROC+X10yrPopROC, data = soccer)
+summary(h3)
+
+h3a = glm(X10yrELOROC ~ X10yrGDPPerROC, data = soccer)
+summary(h3a)
+```
+
+```{r}
+# Examine 4 year relationship year to year change and rate of change.
+j2 = glm(X4yrELOChg ~ X4yrGDPChg+X4yrPopChg, data = soccer)
+summary(j2)
+
+j2a = glm(X4yrELOChg ~ X4yrGDPPerChg, data = soccer)
+summary(j2a)
+
+j3 = glm(X4yrELOROC ~ X4yrGDPROC+X4yrPopROC, data = soccer)
+summary(j3)
+
+j3a = glm(X4yrELOROC ~ X4yrGDPPerROC, data = soccer)
+summary(j3a)
+```
+
+```{r}
+# Examine 8 year relationship year to year change and rate of change.
+k2 = glm(X8yrELOChg ~ X8yrGDPChg+X8yrPopChg, data = soccer)
+summary(k2)
+
+k2a = glm(X8yrELOChg ~ X8yrGDPPerChg, data = soccer)
+summary(k2a)
+
+k3 = glm(X8yrELOROC ~ X8yrGDPROC+X8yrPopROC, data = soccer)
+summary(k3)
+
+k3a = glm(X8yrELOROC ~ X8yrGDPPerROC, data = soccer)
+summary(k3a)
+```
+
+#Does having a Generational Player correlate to higher elo rating?
+```{r}
+l1 = glm(Elo~GENPLAYERNUM, data = soccer)
+summary(l1)
+
+l2 = glm(Elo~GENPLAYERYN, data = soccer)
+summary(l2)
+```
+
+# Is soccer being the country's favorite sport a factor in a country's success?
+```{r}
+soccer$FAVSPORT = as.factor(soccer$FAVSPORT)
+soccer$WCQUALIFY = as.factor(soccer$WCQUALIFY)
+
+m1 = glm(Elo~FAVSPORT, data = soccer)
+summary(m1)
+```
+
+#Use GDP, FAVSPORT, and GENPLAYERYN to build predictive model
+```{r}
+dt = sample(nrow(soccer), nrow(soccer)*.7,replace = FALSE)
+train = soccer[dt,]
+test = soccer[-dt,]
+```
+
+Run Models with no preprocessing of data
+```{r}
+library(caret)
+mod1 = glm(Elo~GDPPER+FAVSPORT+GENPLAYERYN, data = train)
+summary(mod1)
+
+modpred1 = predict(mod1,newdata = test)
+
+RMSE(modpred1,test$Elo, na.rm = TRUE) #210.76
+R2(modpred1,test$Elo, na.rm = TRUE) # 29.24%
+```
+
+For classifier models, use only data in World Cup Years, since we know when that will be in the future
+```{r}
+library(sqldf)
+soccerWCYR = sqldf("SELECT YEAR, COUNTRY, CONF, WCPREVYEAR, WCPREVYEARQUAL, GDPPER, GENPLAYERYN, FAVSPORT
+                   FROM soccer
+                   WHERE WCPREVYEAR = 1
+                   ORDER BY COUNTRY, YEAR")
+
+str(soccerWCYR)
+```
+
+Split data that will be used for classifying models
+```{r}
+dt = sample(nrow(soccerWCYR), nrow(soccerWCYR)*.7,replace = FALSE)
+trainWCYR = soccerWCYR[dt,]
+testWCYR = soccerWCYR[-dt,]
+```
+
+
+Logistic - no preprocessing
+```{r}
+mod2 = glm(WCPREVYEARQUAL~GDPPER+FAVSPORT+GENPLAYERYN, family = "binomial", data = trainWCYR)
+summary(mod2)
+
+testWCYR$predmod2 = predict(mod2,newdata = testWCYR, type = "response")
+testWCYR$predmod2prob = ifelse(testWCYR$predmod2 > 0.5, 1, 0)
+testWCYR$predmod2prob = as.factor(testWCYR$predmod2prob)
+
+sensitivity(data = testWCYR$predmod2prob,
+            reference = testWCYR$WCPREVYEARQUAL,
+            positive = "1") #30.70
+
+
+specificity(data = testWCYR$predmod2prob,
+           reference = testWCYR$WCPREVYEARQUAL,
+           negative = "0") #99.03
+
+confusionMatrix(data = testWCYR$predmod2prob,
+            reference = testWCYR$WCPREVYEARQUAL,
+            positive = "1") # Overall Accuracy 82.15 %
+
+```
+
+
+Rule Based Tree Model - Regression - No Preprocessing
+```{r}
+library(RWeka)
+m5RulesTree = M5Rules(Elo~GDPPER+FAVSPORT+GENPLAYERYN+CONF, data = train)
+m5RulesTree
+
+predm5RulesTree = predict(m5RulesTree, test$Elo)
+
+RMSE(predm5RulesTree, test$Elo, na.rm = TRUE) #349.30
+R2(predm5RulesTree, test$Elo, na.rm = TRUE) #1.42 %
+```
+
+Random Forest - Regression - No PreProcessing
+```{r}
+library(randomForest)
+rfmodel = randomForest(Elo~GDPPER+FAVSPORT+GENPLAYERYN+CONF, data = train, na.action = na.exclude)
+rfmodel
+
+predrfmodel = predict(rfmodel, newdata = test)
+
+RMSE(predrfmodel, test$Elo, na.rm = TRUE) # 184.41
+R2(predrfmodel, test$Elo, na.rm = TRUE) # 50.26%
+
+```
+
+Rule Based Tree Model - Classification - No Preprocessing
+```{r}
+library(C50)
+c5RulesClass = C5.0(WCPREVYEARQUAL~GDPPER+FAVSPORT+GENPLAYERYN+CONF, data = trainWCYR, rules = TRUE)
+c5RulesClass
+summary(c5RulesClass)
+
+testWCYR$RFProb = predc5RulesClass[,"1"]
+testWCYR$RFClass = predict(c5RulesClass, testWCYR)
+head(testWCYRCS)
+
+sensitivity(data = testWCYR$RFClass,
+            reference = testWCYR$WCPREVYEARQUAL,
+            positive = "1") # 30.43
+specificity(data = testWCYR$RFClass,
+            reference = testWCYR$WCPREVYEARQUAL,
+            negative = "0") #99.50
+
+confusionMatrix(data = testWCYR$RFClass,
+            reference = testWCYR$WCPREVYEARQUAL,
+            positive = "1") #Overall Accuracy - 84.14%
+
+```
+
+Random Forrest - Classification - No PreProcessing
+```{r}
+library(randomForest)
+RanForestClass = randomForest(WCPREVYEARQUAL~GDPPER+FAVSPORT+GENPLAYERYN+CONF, data = trainWCYR, na.action = na.exclude)
+RanForestClass
+
+predRanForestClass = predict(RanForestClass, newdata = testWCYR)
+
+testWCYR$RFProb = predRanForestClass[,"1"]
+testWCYR$RFClass = predict(RanForestClass, testWCYR)
+head(testWCYR)
+
+sensitivity(data = testWCYR$RFClass,
+            reference = testWCYR$WCPREVYEARQUAL,
+            positive = "1") #29.70
+specificity(data = testWCYR$RFClass,
+            reference = testWCYR$WCPREVYEARQUAL,
+            negative = "0") #99.67
+
+confusionMatrix(data = testWCYR$RFClass,
+            reference = testWCYR$WCPREVYEARQUAL,
+            positive = "1") # Overall Accuracy 82.4 %
+```
+
+Run through models with preprocessed data.
+```{r}
+library(AppliedPredictiveModeling)
+library(caret)
+#Center and Scale Population, GDP and GDP Per Capita
+PreProc = preProcess(soccer2[,9:11], method=c("center", "scale"))
+soccerPP = predict(PreProc, soccer2[,9:11])
+#change column names of Cenetered and scaled variables
+soccerPP = setNames(soccerPP, c("GDPCS","POPCS","GDPPERCS"))
+
+soccerCS = as.data.frame(c(soccer2,soccerPP))
+```
+
+
+#Use GDP, FAVSPORT, and GENPLAYERYN to build predictive model
+```{r}
+dt = sample(nrow(soccerCS), nrow(soccerCS)*.7,replace = FALSE)
+trainCS = soccerCS[dt,]
+testCS = soccerCS[-dt,]
+```
+
+Run Models with preprocessing of data
+```{r}
+mod1CS = glm(Elo~GDPPERCS+FAVSPORT+GENPLAYERYN, data = trainCS)
+summary(mod1CS)
+
+modpred1CS = predict(mod1CS, newdata = testCS)
+
+RMSE(modpred1CS, testCS$Elo, na.rm = TRUE) #210.64
+R2(modpred1CS, testCS$Elo, na.rm = TRUE) #25.72
+```
+
+For classifier models, use only data in World Cup Years, since we know when that will be in the future
+```{r}
+library(sqldf)
+soccerWCYRCS = sqldf("SELECT YEAR, COUNTRY, CONF, WCPREVYEAR, WCPREVYEARQUAL, GDPPER, GENPLAYERYN, FAVSPORT, GDPPERCS
+                   FROM soccerCS
+                   WHERE WCPREVYEAR = 1
+                   ORDER BY COUNTRY, YEAR")
+
+soccerWCYRCS$FAVSPORT = as.factor(soccerWCYRCS$FAVSPORT)
+str(soccerWCYRCS)
+```
+
+Split data that will be used for classifying models
+```{r}
+dt = sample(nrow(soccerWCYRCS), nrow(soccerWCYRCS)*.7,replace = FALSE)
+trainWCYRCS = soccerWCYRCS[dt,]
+testWCYRCS = soccerWCYRCS[-dt,]
+```
+
+Rule Based Tree Model - Regression - Data PreProcessed ***
+```{r}
+library(RWeka)
+library(caret)
+
+m5RulesTreeCS = M5Rules(Elo~POPCS+GDPCS+GDPPERCS+FAVSPORT+CONF, data = trainCS, control = Weka_control(M=100))
+m5RulesTreeCS
+
+plot(m5tune)
+
+predm5RulesTree = predict(m5RulesTreeCS, newdata = testCS)
+
+RMSE(predm5RulesTree,testCS$Elo, na.rm = TRUE) #214.18
+R2(predm5RulesTree,testCS$Elo, na.rm = TRUE) #50.26%
+
+```
+
+Random Forest - Regression - Data PreProcessed
+```{r}
+library(randomForest)
+library(caret)
+rfmodelcs = randomForest(Elo~POPCS+GDPCS+GDPPERCS+FAVSPORT+CONF, data = trainCS, na.action = na.exclude)
+rfmodelcs
+
+predrfmodelcs = predict(rfmodelcs, newdata = testCS)
+summary(predrfmodelcs)
+
+
+RMSE(predrfmodelcs, testCS$Elo, na.rm = TRUE) #133.74
+R2(predrfmodelcs, testCS$Elo, na.rm = TRUE) #74.29
+```
+
+
+Rule Based Tree Model - Classification - Data PreProcessed
+```{r}
+library(C50)
+c5RulesClassCS = C5.0(WCPREVYEARQUAL~GDPPERCS+FAVSPORT+GENPLAYERYN+CONF, data = trainWCYRCS, rules = TRUE)
+c5RulesClassCS
+summary(c5RulesClassCS)
+
+predc5RulesClassCS = predict(c5RulesClassCS, newdata = testWCYRCS)
+
+testWCYRCS$RFProb = predc5RulesClassCS[,"1"]
+testWCYRCS$RFClass = predict(c5RulesClassCS, testWCYRCS)
+head(testWCYRCS)
+
+sensitivity(data = testWCYRCS$RFClass,
+            reference = testWCYRCS$WCPREVYEARQUAL,
+            positive = "1") # 30.77
+specificity(data = testWCYRCS$RFClass,
+            reference = testWCYRCS$WCPREVYEARQUAL,
+            negative = "0") #99.75
+
+confusionMatrix(data = testWCYRCS$RFClass,
+            reference = testWCYRCS$WCPREVYEARQUAL,
+            positive = "1") #Overall Accuracy - 85%
+
+
+```
+
+
+
+Random Forrest - Classification - Data PreProcessed
+```{r}
+library(randomForest)
+
+RanForestClassCS = randomForest(WCPREVYEARQUAL~GDPPERCS+FAVSPORT+GENPLAYERYN+CONF, data = trainWCYRCS, na.action = na.exclude)
+RanForestClassCS
+
+predRanForestClassCS = predict(RanForestClassCS, newdata = testWCYRCS, type = "prob")
+head(predRanForestClassCS)
+
+testWCYRCS$RFProb = predRanForestClassCS[,"1"]
+testWCYRCS$RFClass = predict(RanForestClassCS, testWCYRCS)
+head(testWCYRCS)
+
+sensitivity(data = testWCYRCS$RFClass,
+            reference = testWCYRCS$WCPREVYEARQUAL,
+            positive = "1") #27.37
+specificity(data = testWCYRCS$RFClass,
+            reference = testWCYRCS$WCPREVYEARQUAL,
+            negative = "0") #99.38
+
+confusionMatrix(data = testWCYRCS$RFClass,
+            reference = testWCYRCS$WCPREVYEARQUAL,
+            positive = "1") # Overall Accuracy 83.1 % 
+```
+
+
+####Of the best 2 models, try building models with rate of change rather than actual population and gdp
+###############Models not very succesful
+
+Rule Based Tree Model - Regression - Data PreProcessed 
+```{r}
+library(RWeka)
+library(caret)
+
+m5RulesTreeROC = M5Rules(X4yrELOROC~X4yrPopROC+X4yrGDPROC+X4yrGDPPerROC+FAVSPORT+CONF, data = trainCS, control = Weka_control(M=100))
+m5RulesTreeROC
+
+
+predm5RulesTreeROC = predict(m5RulesTreeROC, newdata = testCS)
+
+RMSE(predm5RulesTreeROC,testCS$X4yrELOROC, na.rm = TRUE)
+R2(predm5RulesTreeROC,testCS$X4yrELOROC, na.rm = TRUE) 
+
+```
+
+Random Forest - Regression - Data PreProcessed
+```{r}
+library(randomForest)
+library(caret)
+rfmodelcsROC = randomForest(X4yrELOROC~X4yrPopROC+X4yrGDPROC+X4yrGDPPerROC+FAVSPORT+CONF, data = trainCS, na.action = na.exclude)
+rfmodelcsROC
+
+predrfmodelcsROC = predict(rfmodelcsROC, newdata = testCS)
+summary(predrfmodelcsROC)
+
+
+RMSE(predrfmodelcsROC, testCS$X4yrELOROC, na.rm = TRUE) 
+R2(predrfmodelcsROC, testCS$X4yrELOROC, na.rm = TRUE)
+```
+
+```{r}
+gdpglm = randomForest(GDPP~., data = trainCS, na.action = na.exclude)
+summary(gdpglm)
+```
+
