@@ -1,3 +1,6 @@
+#Tracy Wilson
+#Team 17
+
 library(dplyr)
 library(randomForest)
 library(caret)
@@ -14,22 +17,22 @@ setTimeLimit(cpu = Inf, elapsed = Inf, transient = FALSE)
 setSessionTimeLimit(cpu = Inf, elapsed = Inf)
 
 # Load files
-world_cup_dataset <- read.csv("~/Google Drive/Project/fifaworldcup2018-master/World Cup 2018 Dataset.csv", stringsAsFactors = FALSE, header = TRUE)
-results <- read.csv("~/Google Drive/Project/fifaworldcup2018-master/results.csv", stringsAsFactors = FALSE, header = TRUE)
-team_rankings <- read.csv("~/Google Drive/Project/fifaworldcup2018-master/fifa_ranking.csv", stringsAsFactors = FALSE, header = TRUE)
-elo_ratings <- read.csv("~/Google Drive/Project/fifaworldcup2018-master/elo_ratings.csv", stringsAsFactors = FALSE, header = TRUE)
-gdp_data <- read.csv("~/Google Drive/Project/GDP_Country.csv", stringsAsFactors = FALSE, header = TRUE)
-gdp_per_capita <- read.csv("~/Google Drive/Project/GDP_per_Capita2.csv", stringsAsFactors = FALSE, header = TRUE)
-male_population <- read.csv("~/Google Drive/Project/male_population.csv", stringsAsFactors = FALSE, header = TRUE)
-WC_Appearances <- read.csv("~/Google Drive/Project/WC_Appearances.csv", stringsAsFactors = FALSE, header = TRUE)
-
-treeData <- read.csv("~/Google Drive/Project/Soccer_V3.csv", stringsAsFactors = FALSE, header = TRUE)
-
-select_string <- "select DISTINCT(p.Country) from  male_population p WHERE p.Country not in (Select Country from treeData) ORDER by Country"
-unmatchedCountry <- sqldf(select_string, stringsAsFactors = FALSE)
-#write.csv(unmatchedCountry, "unmatchedCountry.csv", row.names = FALSE)
-join_string <- "select DISTINCT(Country) from  treeData ORDER by Country"
-CountryList <- sqldf(join_string, stringsAsFactors = FALSE)
+# world_cup_dataset <- read.csv("~/Google Drive/Project/fifaworldcup2018-master/World Cup 2018 Dataset.csv", stringsAsFactors = FALSE, header = TRUE)
+# results <- read.csv("~/Google Drive/Project/fifaworldcup2018-master/results.csv", stringsAsFactors = FALSE, header = TRUE)
+# team_rankings <- read.csv("~/Google Drive/Project/fifaworldcup2018-master/fifa_ranking.csv", stringsAsFactors = FALSE, header = TRUE)
+# elo_ratings <- read.csv("~/Google Drive/Project/fifaworldcup2018-master/elo_ratings.csv", stringsAsFactors = FALSE, header = TRUE)
+# gdp_data <- read.csv("~/Google Drive/Project/GDP_Country.csv", stringsAsFactors = FALSE, header = TRUE)
+# gdp_per_capita <- read.csv("~/Google Drive/Project/GDP_per_Capita2.csv", stringsAsFactors = FALSE, header = TRUE)
+# male_population <- read.csv("~/Google Drive/Project/male_population.csv", stringsAsFactors = FALSE, header = TRUE)
+# WC_Appearances <- read.csv("~/Google Drive/Project/WC_Appearances.csv", stringsAsFactors = FALSE, header = TRUE)
+#
+# treeData <- read.csv("~/Google Drive/Project/Soccer_V3.csv", stringsAsFactors = FALSE, header = TRUE)
+#
+# select_string <- "select DISTINCT(p.Country) from  male_population p WHERE p.Country not in (Select Country from treeData) ORDER by Country"
+# unmatchedCountry <- sqldf(select_string, stringsAsFactors = FALSE)
+# #write.csv(unmatchedCountry, "unmatchedCountry.csv", row.names = FALSE)
+# join_string <- "select DISTINCT(Country) from  treeData ORDER by Country"
+# CountryList <- sqldf(join_string, stringsAsFactors = FALSE)
 #write.csv(CountryList, "CountryList.csv", row.names = FALSE)
 
 # Data Cleaning
@@ -165,11 +168,11 @@ CountryList <- sqldf(join_string, stringsAsFactors = FALSE)
 
 
 
-library(sqldf)
-
-WC <- sqldf("select year as Year, country_full as Country, elo_rating as 'Elo.Rating' from latest_team_rankings where elo_rating > 1500 group by year, country_full")
-
-names(WC)
+# library(sqldf)
+#
+# WC <- sqldf("select year as Year, country_full as Country, elo_rating as 'Elo.Rating' from latest_team_rankings where elo_rating > 1500 group by year, country_full")
+#
+# names(WC)
 
 #wcQualRaw <- read.csv("~/Google Drive/Project/Soccer_V2.csv", stringsAsFactors = FALSE, header = TRUE)
 #wcQualTop8 <- sqldf("Select Rank, Place from wcQualRaw WHERE Place > 0")
@@ -203,6 +206,58 @@ ggplot(WC_final, aes(x = Elo, y = GDP_per_Capita)) +
   theme(legend.position=c(.2, .6))
 
 str_WC <- sqldf("SELECT * FROM WC_final WHERE Year == 2018")
+ggplot(str_WC, aes(x = Elo, y = Strength)) +
+  geom_point(aes(color = Country)) +
+  theme_bw() +
+  theme(legend.position=c(.2, .6))
+
+
+
+soccer= read.csv('~/Google Drive/Project/soccer_V2.csv',header = TRUE, na.strings = ".")
+str(soccer)
+
+#make spare dataset identical to first
+soccer2 = read.csv('~/Google Drive/Project/soccer_V2.csv',header = TRUE, na.strings = ".")
+
+#change binary variables to factors
+soccer$WCYEAR = as.factor(soccer$WCYEAR)
+soccer$WCQUALIFY = as.factor(soccer$WCQUALIFY)
+soccer$WCPREVYEAR = as.factor(soccer$WCPREVYEAR)
+soccer$WCPREVYEARQUAL = as.factor(soccer$WCPREVYEARQUAL)
+soccer$FAVSPORT = as.factor(soccer$FAVSPORT)
+soccer$GENPLAYERYN = as.factor(soccer$GENPLAYERYN)
+
+#apply same changes to backup dataset
+soccer2$WCYEAR = as.factor(soccer2$WCYEAR)
+soccer2$WCQUALIFY = as.factor(soccer2$WCQUALIFY)
+soccer2$WCPREVYEAR = as.factor(soccer2$WCPREVYEAR)
+soccer2$WCPREVYEARQUAL = as.factor(soccer2$WCPREVYEARQUAL)
+soccer2$FAVSPORT = as.factor(soccer2$FAVSPORT)
+soccer2$GENPLAYERYN = as.factor(soccer2$GENPLAYERYN)
+
+ggplot(soccer, aes(x = Rank, y = Elo)) +
+  geom_point(aes(color = Country)) +
+  theme_bw() +
+  theme(legend.position = "Top")
+
+ggplot(soccer, aes(x = Elo, y = Population)) +
+  geom_point(aes(color = Country)) +
+  theme_bw() +
+  theme(legend.position=c(.2, .6))
+
+ggplot(soccer, aes(x = Elo, y = GDP)) +
+  geom_point(aes(color = Country)) +
+  theme_bw() +
+  theme(legend.position=c(.2, .6))
+
+
+Smaller_Plot <- sqldf("SELECT GDPPER, Country, Elo from soccer where Rank < 30")
+ggplot(Smaller_Plot, aes(x = Elo, y = GDPPER)) + geom_text(aes(label = Country, color = Country), hjust = 0, nudge_x = 0.05)
+#  geom_point(aes(color = Country)) + geom_text(aes(label = Country), hjust = 0, nudge_x = 0.05)
+#  theme_bw())
+#  theme(legend.position=c(.2, .6))
+
+str_WC <- sqldf("SELECT * FROM soccer WHERE Year == 2018")
 ggplot(str_WC, aes(x = Elo, y = Strength)) +
   geom_point(aes(color = Country)) +
   theme_bw() +
@@ -245,9 +300,15 @@ WC.pred.opt <- predict(model.train.opt, newdata = WC.test, type = "response")
 PredGRAll <- mean(WC.pred.all)
 PredGROpt <- mean(WC.pred.opt)
 
+plot(model.train.opt)
 
-r2All <- summary(model.train.all)$r.squared
-r2Opt <- summary(model.train.opt)$r.squared
+
+r2All <- summary(model.train.all)$r.squared #56.23291%
+r2Opt <- summary(model.train.opt)$r.squared #56.22791%
+
+RMSE(WC.pred.opt, WC.test$Elo, na.rm = TRUE) #113.076
+R2(WC.pred.opt, WC.test$Elo, na.rm = TRUE) # 53.11364%
+
 
 ##########################
 # PCA
@@ -264,6 +325,7 @@ loadings <- as.data.frame(pca.events$rotation)
 library(reshape2)
 library(ggplot2)
 head(loadings)
+loadings
 
 v <- rownames(loadings)
 
@@ -373,7 +435,7 @@ print(err.knn.train)
 #What is the 10-fold cross-validated error rate for the knn for the best k on training data.  0.9926974
 
 ##########################
-# LDA
+# LDA Linear Discriminant Analysis
 ##########################
 
 cv.lda <- function(data, model, yname, K=nrow(data), seed = 1) {
@@ -433,7 +495,7 @@ predict_WC <- predict(randomForestModel, WC.test)
 pred_Elo <- predict_WC
 trueElo <- WC.train$Elo
 #Can't get this to work
-confusionMatrix(pred_Elo, trueElo)
+#confusionMatrix(pred_Elo, trueElo)
 
 # Let us use feature engineering to improve accuracy and balance the sensitivity and specificity values
 
@@ -449,4 +511,6 @@ formula_1 <- as.formula(selected_features)
 # Random Forest with selected features
 randomForestModel_1 <- randomForest(formula_1, WC.train, ntree = 30000, mtry = 2, nodesize = 0.01 * nrow(train))
 predict_WC <- predict(randomForestModel_1, WC.test)
-confusionMatrix(WC.test$Elo, predict_WC, positive = "1")
+confusionMatrix(WC.test$Elo, predict_WC)
+summary(table(predict_WC))
+summary(table(WC.test$Elo))
