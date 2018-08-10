@@ -178,7 +178,7 @@ setSessionTimeLimit(cpu = Inf, elapsed = Inf)
 #wcQualTop8 <- sqldf("Select Rank, Place from wcQualRaw WHERE Place > 0")
 #ggplot(wcQualTop8, aes(x = wcQualTop8$Rank, y = wcQualTop8$Place), ylim(1,8)) + geom_point()
 
-WC_final <- read.csv("~/Google Drive/Project/final_data_set.csv", stringsAsFactors = FALSE, header = TRUE)
+WC_final <- read.csv("final_data_set.csv", stringsAsFactors = FALSE, header = TRUE)
 #write.csv(WC_Join, "~/Google Drive/Project/final_data_set.csv", row.names = FALSE)
 WC_final$GDP <- as.numeric(WC_final$GDP)
 summary(WC_final)
@@ -211,57 +211,6 @@ ggplot(str_WC, aes(x = Elo, y = Strength)) +
   theme_bw() +
   theme(legend.position=c(.2, .6))
 
-
-
-soccer= read.csv('~/Google Drive/Project/soccer_V2.csv',header = TRUE, na.strings = ".")
-str(soccer)
-
-#make spare dataset identical to first
-soccer2 = read.csv('~/Google Drive/Project/soccer_V2.csv',header = TRUE, na.strings = ".")
-
-#change binary variables to factors
-soccer$WCYEAR = as.factor(soccer$WCYEAR)
-soccer$WCQUALIFY = as.factor(soccer$WCQUALIFY)
-soccer$WCPREVYEAR = as.factor(soccer$WCPREVYEAR)
-soccer$WCPREVYEARQUAL = as.factor(soccer$WCPREVYEARQUAL)
-soccer$FAVSPORT = as.factor(soccer$FAVSPORT)
-soccer$GENPLAYERYN = as.factor(soccer$GENPLAYERYN)
-
-#apply same changes to backup dataset
-soccer2$WCYEAR = as.factor(soccer2$WCYEAR)
-soccer2$WCQUALIFY = as.factor(soccer2$WCQUALIFY)
-soccer2$WCPREVYEAR = as.factor(soccer2$WCPREVYEAR)
-soccer2$WCPREVYEARQUAL = as.factor(soccer2$WCPREVYEARQUAL)
-soccer2$FAVSPORT = as.factor(soccer2$FAVSPORT)
-soccer2$GENPLAYERYN = as.factor(soccer2$GENPLAYERYN)
-
-ggplot(soccer, aes(x = Rank, y = Elo)) +
-  geom_point(aes(color = Country)) +
-  theme_bw() +
-  theme(legend.position = "Top")
-
-ggplot(soccer, aes(x = Elo, y = Population)) +
-  geom_point(aes(color = Country)) +
-  theme_bw() +
-  theme(legend.position=c(.2, .6))
-
-ggplot(soccer, aes(x = Elo, y = GDP)) +
-  geom_point(aes(color = Country)) +
-  theme_bw() +
-  theme(legend.position=c(.2, .6))
-
-
-Smaller_Plot <- sqldf("SELECT GDPPER, Country, Elo from soccer where Rank < 30")
-ggplot(Smaller_Plot, aes(x = Elo, y = GDPPER)) + geom_text(aes(label = Country, color = Country), hjust = 0, nudge_x = 0.05)
-#  geom_point(aes(color = Country)) + geom_text(aes(label = Country), hjust = 0, nudge_x = 0.05)
-#  theme_bw())
-#  theme(legend.position=c(.2, .6))
-
-str_WC <- sqldf("SELECT * FROM soccer WHERE Year == 2018")
-ggplot(str_WC, aes(x = Elo, y = Strength)) +
-  geom_point(aes(color = Country)) +
-  theme_bw() +
-  theme(legend.position=c(.2, .6))
 
 
 library(MASS)
@@ -302,12 +251,57 @@ PredGROpt <- mean(WC.pred.opt)
 
 plot(model.train.opt)
 
-
 r2All <- summary(model.train.all)$r.squared #56.23291%
 r2Opt <- summary(model.train.opt)$r.squared #56.22791%
 
 RMSE(WC.pred.opt, WC.test$Elo, na.rm = TRUE) #113.076
 R2(WC.pred.opt, WC.test$Elo, na.rm = TRUE) # 53.11364%
+###########################
+#Scaled
+##########################
+WCLM.scaled = scale(WCLM, center= TRUE, scale=TRUE)
+
+n = nrow(WCLM.scaled)
+train <- sample(1:n, n*.7, replace = FALSE)
+WC.train.s = WCLM.scaled[train,]
+WC.test.s = WCLM.scaled[-train,]
+WC.train.s <- as.data.frame(WC.train.s)
+WC.test.s <- as.data.frame(WC.test.s)
+model.train.scaled <- lm(WC.train.s$Elo ~ ., data = WC.train.s)
+WC.pred.s <- predict(model.train.scaled, newdata = WC.test.s, type = "response")
+plot(model.train.scaled)
+PredGRs <- mean(WC.pred.s)
+
+RMSE(WC.pred.s, WC.test.s$Elo, na.rm = TRUE) #0.6715286
+R2(WC.pred.s, WC.test.s$Elo, na.rm = TRUE) # 0.5358159
+
+plot(WC.pred.s)
+
+ggplot(WC.train.s,aes(Elo,Population))+stat_summary(fun.data=mean_cl_normal) + 
+    geom_smooth(method='lm',formula=WC.train.s$Elo~.)
+
+
+#############################
+#Minimal Model
+#############################
+library(MASS)
+
+set.seed(1)
+WCLMmin <- sqldf("SELECT Elo, GDP, Population, GDP_per_Capita, Strength FROM WC_final")
+
+n = nrow(WCLMmin)
+train <- sample(1:n, n*.7, replace = FALSE)
+WC.train.min = WCLMmin[train,]
+WC.test.min = WCLMmin[-train,]
+
+model.train.min <- lm(WC.train.min$Elo ~ ., data = WC.train.min)
+
+WC.pred.min <- predict(model.train.min, newdata = WCLMmin, type = "response")
+
+Predmean <- mean(WC.pred.min)
+
+r2min <- summary(model.train.min)$r.squared
+
 
 
 ##########################
